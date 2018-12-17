@@ -1,29 +1,30 @@
 var Joc = {
-    tauler: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
+    tauler: [[ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]],
     
     puntuacio: 0,
     punctuacioMax: 0,
@@ -44,25 +45,29 @@ var Joc = {
     
     inicialitzarJoc: function () {
         var pInicial = GeneraPecaAleatoria();
-        Joc.pieza = new Pieza(pInicial,3,0);
+        Joc.pieza = new Pieza(pInicial,3,3);
         var pNext = GeneraPecaAleatoria();
-        Joc.nextPieza = new Pieza(pNext,3,0); 
+        Joc.nextPieza = new Pieza(pNext,3,3); 
         
         Joc.colocarPieza()
         
     },
     
     dibuixarPeça(){
-        if(Joc.pieza.forma[3][0] == 'borrar'){var b=1}else{var b=0}
-        for(var y=0;y<Joc.pieza.forma.length -b;y++){
+        for(var y=0;y<Joc.pieza.forma.length;y++){
             for(var x=0;x<4;x++){
-                Joc.tauler[Joc.pieza.y+y][Joc.pieza.x + x]= Joc.pieza.forma[y][x];
+                if(Joc.pieza.forma[y][x] != '0'){
+                    Joc.tauler[Joc.pieza.y - y][Joc.pieza.x + x]= Joc.pieza.forma[y][x];
+                }
             }
         }
     },
     colocarPieza: function (){
-        Joc.pieza.x=3;
-        Joc.pieza.y=0;
+        var comp = 0;
+        for (var x=0;x<4; x++){
+            if (Joc.pieza.forma[0][x] == 0){comp ++}
+        }
+        if (comp == 4){Joc.pieza.y --}
         var n=0;
         var comp=0;
         for (var x=0;x<4;x++){
@@ -72,7 +77,9 @@ var Joc = {
         if (comp == 4){n=1;}
         for(var y=0+n;y<4;y++){
             for(var x=0;x<4;x++){
-                Joc.tauler[Joc.pieza.y+y][Joc.pieza.x + x]= Joc.pieza.forma[y][x];
+                if(Joc.pieza.forma[y][x] != '0'){
+                    Joc.tauler[Joc.pieza.y - y][Joc.pieza.x + x]= Joc.pieza.forma[y][x];
+                }
             }
         }
     },
@@ -115,7 +122,7 @@ var Joc = {
         var pieza = document.getElementById("peca");
         for (y=0;y<4;y++){
             for (x=0;x<4;x++){
-                if (Joc.pieza.forma[y][x] == 'A'){
+                if (Joc.pieza.forma[y][x-1] == 'A'){
                     img = document.getElementById("groc");
                 }
                 else if (Joc.pieza.forma[y][x] == 'B'){
@@ -139,7 +146,7 @@ var Joc = {
                 else{
                     img = document.getElementById("negre");
                 }
-                var dibuix = pieza.getContext("2d").drawImage(img, x*20, y*20, 20, 20 );
+                var dibuix = pieza.getContext("2d").drawImage(img, (x)*20, y*20, 20, 20 );
             }
         }
         var nextPieza = document.getElementById("nextpeca");
@@ -181,50 +188,80 @@ var Joc = {
             Joc.interval -= 50;
         }
     },     
-        
-    teclat: function () {},
+    esborrar: function(){
+        for(var y=0;y<Joc.tauler.length-1;y++) {
+            for(var x=0;x<Joc.tauler[0].length;x++){
+                if(Joc.tauler[y][x] !=0 && Joc.tauler[y][x] !=1){
+                    Joc.tauler[y][x] =0;
+                }
+            }
+        }   
+    },    
+    teclat: function (e) {
+        var key = document.all ? e.which : e.key;
+        if (key == "ArrowRight"){ //depenent de quina fletxa s'ha pulsat, s'assignarà una direcció
+            Joc.pieza.moureDreta(); //dreta
+        }
+        else if (key == "ArrowLeft"){
+            Joc.pieza.moureEsquerra(); //esquerra
+        }
+        else if (key=="ArrowUp"){
+            movimentFixe = 2; //Amunt
+        }
+    },
     
     baixar: function (){
-            if (Joc.tauler[3][0] != 'borrar'){
-                for (var y=0;y<4;y++){
-                    for(var x=0;x<4;x++){
-                        Joc.tauler[Joc.pieza.y + y][Joc.pieza.x + x] = 0;
-                    }
+        /*for (var y=0;y<4;y++){
+            for(var x=0;x<4;x++){
+                if(Joc.pieza.forma[y][x] != '0'){
+                    Joc.tauler[Joc.pieza.y - y][Joc.pieza.x + x] = 0;
                 }
-                Joc.pieza.y ++;
-            }  
+            }
+        }*/
+        Joc.pieza.y ++;         
     },
         
     colisio: function (){
-        var comp=0;
-        for (var x=0;x<4;x++){
-            if (Joc.pieza.forma[3][x] == 0)
-            {comp ++}
-        }
-        if (comp == 4){
-            if(Joc.pieza.y +3 == 24){
-                Joc.pieza.forma[3]== Joc.pieza.forma[3][0] == 'borrar';
-                console.log(Joc.pieza.forma)
+        for(var y=0;y<4; y++){
+            for (var x=0;x<4; x++){
+                if(Joc.pieza.forma[y][x] != 0){
+                    if(Joc.tauler[Joc.pieza.y -y + 1][Joc.pieza.x +x] ==1){
+                        Joc.pintarGris();
+                        Joc.seguent();
+                        return true;
+                    }
+                }
             }
         }
-        else if(comp != 4 && Joc.pieza.y +2 == 24){
-            Joc.pintarGris()
-            Joc.seguent()
-        }
-    },
-    pintarGris: function (){
-        for (var y=0;y<Joc.pieza.forma.length;y++){
-            for (var x=0;x<4;x++){
-                if (Joc.pieza.forma[y][x] !=0 && Joc.pieza.forma[y][x] != 'borrar'){
-                    Joc.tauler[Joc.pieza.y + y][Joc.pieza.x + x]= 1;
+        
+        /*for(var c=0; c<4;c++){
+            if(Joc.tauler[Joc.pieza.y][Joc.pieza.x + c ] == 1 ||(Joc.tauler[Joc.pieza.y + 1][Joc.pieza.x + c ] == 1 && Joc.pieza.forma[3][c] != 0)){
+                for(var y=0;y<4; y++){
+                    for (var x=0;x<4; x++){
+                        if(Joc.tauler[Joc.pieza.y -y][Joc.pieza.x + x ] != 0){
+                            Joc.tauler[Joc.pieza.y -y][Joc.pieza.x + x ] = 1;
+                        }
+                    }
                 }
-                else{Joc.pieza.forma[y][x]=0}
+                Joc.seguent();
+                break;
+            }
+        }*/
+    },
+    pintarGris : function(){
+        for(var y=0;y<4; y++){
+            for (var x=0;x<4; x++){
+                if(Joc.tauler[Joc.pieza.y -y][Joc.pieza.x + x ] != 0){
+                    Joc.tauler[Joc.pieza.y -y][Joc.pieza.x + x ] = 1;
+                }
             }
         }
     },
     seguent: function(){
-        Joc.pieza=Joc.nextPieza;
-        Joc.nextPieza= new Pieza(GeneraPecaAleatoria(),0,0)
+        Joc.pieza=new Pieza(Joc.nextPieza.forma, 3,3);
+        var pNext = GeneraPecaAleatoria();
+        Joc.nextPieza = new Pieza(pNext,3,3); 
+        
         Joc.colocarPieza();
     },
     comprovarLinia: function () {}, //Comprovem que comprova si una linia està plena de peçes
@@ -233,12 +270,19 @@ var Joc = {
     
     main : function (){
         Joc.mostrarTaula();
-        if(Joc.pieza.forma[3][0] != 'borrar'){
-            Joc.baixar();
-        }
         Joc.colisio();
+        
+        var element = document.getElementById("all");  
+	    document.onkeydown = Joc.teclat;
+        
+        Joc.esborrar();
+        
+        
+
+        Joc.baixar();
         Joc.dibuixarPeça();
         Joc.comptaNivell += 1;
+        
     },
 };
 
@@ -288,20 +332,24 @@ function GeneraPecaAleatoria()
            var numeroAleatori = Math.round(Math.random()*6);                      
            return peces[numeroAleatori];     
        }         
-Pieza.prototype.moureDreta = function()
-         { if ((x-1)>0) { x--;
-                          return true;
-                          }
-           else { return false; }
-           };
+Pieza.prototype.moureDreta = function(){ 
+    for(var y=0; y<4 ;y++){
+        for(var x=0; x<4 ;x++){
+            if(Joc.tauler[Joc.pieza.y -y][Joc.pieza.x + 3 - x] != 0){
+                if((Joc.pieza.x + 3 - x + 1) < Joc.tauler[0].length ){
+                    Joc.pieza.x ++;
+                    return true;
+
+                }
+            }
+        }
+    }
+};
 
 
 Pieza.prototype.moureEsquerra = function()
-         { if ((x+1)<14) { x++;
-                           return true;
-                           }
-           else { return false; }
-           }; 
+         { if ((Joc.pieza.x)>=0) { Joc.pieza.x--;
+                           }};
 
 Pieza.prototype.rotarDreta = function () {
             var formaNova = new Array();

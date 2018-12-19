@@ -32,17 +32,9 @@ var Joc = {
     nextPieza: null,
     nivell: 1,
     comptaNivell: 0, //Cada cop que arriba a 10, l'interval es redueix i puga un nivell, per tant les peçes cauen mes rapid
-    comptadorI: 0,
-    comptadorJ: 0,
-    comptadorL: 0,
-    comptadorO: 0,
-    comptadorS: 0,
-    comptadorT: 0,
-    comptadorZ: 0,
-    interval: 300,
-    
-    pos:0,
-    
+    interval: 500,
+    c:0,
+    posOriginal: 0,
     inicialitzarJoc: function () {
         var pInicial = GeneraPecaAleatoria();
         Joc.pieza = new Pieza(pInicial,3,3);
@@ -53,38 +45,45 @@ var Joc = {
         
     },
     
-    dibuixarPeça(){
+    dibuixarPeça: function(){
         for(var y=0;y<Joc.pieza.forma.length;y++){
             for(var x=0;x<4;x++){
-                if(Joc.pieza.forma[y][x] != '0'){
+                if(Joc.pieza.forma[y][x] != 0){
                     Joc.tauler[Joc.pieza.y - y][Joc.pieza.x + x]= Joc.pieza.forma[y][x];
                 }
             }
         }
     },
     colocarPieza: function (){
-        var comp = 0;
-        for (var x=0;x<4; x++){
-            if (Joc.pieza.forma[0][x] == 0){comp ++}
-        }
-        if (comp == 4){Joc.pieza.y --}
-        var n=0;
+        Joc.posOriginal = Joc.pieza.forma;
         var comp=0;
-        for (var x=0;x<4;x++){
-            if (Joc.pieza.forma[0][x] == 0)
-            {comp ++}
+        for(var c=0; c<4; c++){
+            if (Joc.pieza.forma[3][c] == 0){comp ++}
         }
-        if (comp == 4){n=1;}
-        for(var y=0+n;y<4;y++){
+        if(comp == 4){
+            Joc.c=1;
+            Joc.pieza.y --;
+        }
+        for(var y=0;y<4;y++){
             for(var x=0;x<4;x++){
-                if(Joc.pieza.forma[y][x] != '0'){
-                    Joc.tauler[Joc.pieza.y - y][Joc.pieza.x + x]= Joc.pieza.forma[y][x];
+                if(Joc.pieza.forma[y][x] != 0){
+                    if(Joc.tauler[y][x + 3] == 1){
+                        Joc.derrota();
+                    }
+                    Joc.tauler[Joc.pieza.y - y][Joc.pieza.x + x]= Joc.pieza.forma[y][x];   
                 }
             }
         }
     },
-    
+    derrota: function(){
+        document.getElementById("derrota").innerHTML = "HAS PERDUT";
+		clearInterval(joc);
+    },
     mostrarTaula: function() {
+        document.getElementById("puntuacio").innerHTML = "Puntuació: " + Joc.puntuacio;
+        document.getElementById("puntuacioMax").innerHTML = "Puntuació màxima: " + Joc.puntuacioMax;
+        document.getElementById("nivell").innerHTML = "Nivell: " + Joc.nivell;
+        document.getElementById("comp").innerHTML = "Contador: " + Joc.comptaNivell;
         var canvas = document.getElementById("tauler");
         for (y=0;y<Joc.tauler.length;y++){
             for (x=0;x<Joc.tauler[0].length;x++){
@@ -120,9 +119,10 @@ var Joc = {
             
         }
         var pieza = document.getElementById("peca");
-        for (y=0;y<4;y++){
+        var col=0;
+        for (y=3;y>=0;y--){
             for (x=0;x<4;x++){
-                if (Joc.pieza.forma[y][x-1] == 'A'){
+                if (Joc.pieza.forma[y][x] == 'A'){
                     img = document.getElementById("groc");
                 }
                 else if (Joc.pieza.forma[y][x] == 'B'){
@@ -146,11 +146,14 @@ var Joc = {
                 else{
                     img = document.getElementById("negre");
                 }
-                var dibuix = pieza.getContext("2d").drawImage(img, (x)*20, y*20, 20, 20 );
+                var dibuix = pieza.getContext("2d").drawImage(img, x*20, col*20, 20, 20 );
+                
             }
+            col ++;
         }
         var nextPieza = document.getElementById("nextpeca");
-        for (y=0;y<4;y++){
+        var col=0;
+        for (y=3;y>=0;y--){
             for (x=0;x<4;x++){
                 if (Joc.nextPieza.forma[y][x] == 'A'){
                     img = document.getElementById("groc");
@@ -176,16 +179,20 @@ var Joc = {
                 else{
                     img = document.getElementById("negre");
                 }
-                var dibuix = nextPieza.getContext("2d").drawImage(img, x*20, y*20, 20, 20 );
+                var dibuix = nextPieza.getContext("2d").drawImage(img, x*20, col*20, 20, 20 );
             }
+            col ++;
         }
     },
     
     seguentNivell: function(comptaNivell){
-        if (comptaNivell==10){
-            Joc.nivell +=1;
-            Joc.comptaNivell == 0;
-            Joc.interval -= 50;
+        if (Joc.interval > 50){
+            if (Joc.comptaNivell==10){
+                Joc.nivell +=1;
+                Joc.comptaNivell == 0;
+                var percentatge = Joc.interval / 100 * 10;
+                Joc.interval -= percentatge;
+            }
         }
     },     
     esborrar: function(){
@@ -201,26 +208,64 @@ var Joc = {
         var key = document.all ? e.which : e.key;
         if (key == "ArrowRight"){ //depenent de quina fletxa s'ha pulsat, s'assignarà una direcció
             Joc.pieza.moureDreta(); //dreta
+            Joc.comprovarPeca('right');
         }
         else if (key == "ArrowLeft"){
             Joc.pieza.moureEsquerra(); //esquerra
+            Joc.comprovarPeca('left');
+        }
+        else if (key=="ArrowDown"){
+            Joc.baixar();
         }
         else if (key=="ArrowUp"){
-            movimentFixe = 2; //Amunt
+            Joc.pieza.rotar();
+            var comp = Joc.comprovarPeca('rotar');//Amunt
+            if (comp != false){
+                Joc.posOriginal = Joc.pieza.forma;
+            }
         }
     },
-    
-    baixar: function (){
-        /*for (var y=0;y<4;y++){
-            for(var x=0;x<4;x++){
-                if(Joc.pieza.forma[y][x] != '0'){
-                    Joc.tauler[Joc.pieza.y - y][Joc.pieza.x + x] = 0;
+    comprovarPeca: function (d){
+        for (var y=0;y<4;y++){ //dreta
+            for(var x=0; x<4;x++){
+                if (Joc.pieza.forma[y][x] !=0){
+                    if ( (Joc.pieza.x + x) > Joc.tauler[0].length ){
+                        Joc.pieza.x --;
+                        break;
+                    }
                 }
-            }
-        }*/
-        Joc.pieza.y ++;         
+            }   
+        }
+
+        for (var y=0;y<4;y++){ //esquerra
+            for(var x=0; x<4;x++){
+                if (Joc.pieza.forma[y][x] !=0){
+                    if ( Joc.pieza.x + x < 0 ){
+                        Joc.pieza.x ++;
+                        break;
+                    }
+                }
+
+            }   
+        }
+
+       /* for (var y=0;y<4;y++){ // rotar
+            for(var x=0; x<4;x++){
+                if (Joc.pieza.forma[y][x] !=0){
+                    if ( Joc.tauler[Joc.pieza.y +y][Joc.pieza.x +x] == 1){
+                        Joc.pieza.forma = Joc.posOriginal;
+                        return false;
+                    }
+                }
+
+            }   
+        } */
+
     },
-        
+    baixar: function (){
+        Joc.pieza.y ++;  
+        Joc.puntuacio += 1;
+    },
     colisio: function (){
         for(var y=0;y<4; y++){
             for (var x=0;x<4; x++){
@@ -228,26 +273,12 @@ var Joc = {
                     if(Joc.tauler[Joc.pieza.y -y + 1][Joc.pieza.x +x] ==1){
                         Joc.pintarGris();
                         Joc.seguent();
-                        return true;
                     }
                 }
             }
         }
-        
-        /*for(var c=0; c<4;c++){
-            if(Joc.tauler[Joc.pieza.y][Joc.pieza.x + c ] == 1 ||(Joc.tauler[Joc.pieza.y + 1][Joc.pieza.x + c ] == 1 && Joc.pieza.forma[3][c] != 0)){
-                for(var y=0;y<4; y++){
-                    for (var x=0;x<4; x++){
-                        if(Joc.tauler[Joc.pieza.y -y][Joc.pieza.x + x ] != 0){
-                            Joc.tauler[Joc.pieza.y -y][Joc.pieza.x + x ] = 1;
-                        }
-                    }
-                }
-                Joc.seguent();
-                break;
-            }
-        }*/
     },
+
     pintarGris : function(){
         for(var y=0;y<4; y++){
             for (var x=0;x<4; x++){
@@ -258,20 +289,44 @@ var Joc = {
         }
     },
     seguent: function(){
+        Joc.comptaNivell +=1;
         Joc.pieza=new Pieza(Joc.nextPieza.forma, 3,3);
         var pNext = GeneraPecaAleatoria();
         Joc.nextPieza = new Pieza(pNext,3,3); 
         
         Joc.colocarPieza();
     },
-    comprovarLinia: function () {}, //Comprovem que comprova si una linia està plena de peçes
-    
-    esborrarLinia: function () {}, //Funcio per esborrar una linea que esta plena i baixar les demes peçes
-    
+    comprovarLinia: function () {
+        var comprovant = 0;
+        for (var y=0;y<25;y++){
+            for (x=0;x<Joc.tauler[0].length;x++){  
+                if(Joc.tauler[y][x] == 1){
+                    comprovant ++;
+                }
+                
+            }
+            if (comprovant == 10){
+                Joc.puntuacio +=50;
+                var pos = y;
+                for (var y=pos;y>=0;y--){
+                    for (x=0;x<Joc.tauler[0].length;x++){
+                        Joc.tauler[y][x] = Joc.tauler[y-1][x];
+                        if (y != 0){
+                            Joc.tauler[y-1][x] = 0;
+                        }
+                    }
+                }
+            }
+            else{
+                comprovant = 0;
+            }
+        }
+    }, 
+        
     main : function (){
         Joc.mostrarTaula();
         Joc.colisio();
-        
+        Joc.comprovarLinia();
         var element = document.getElementById("all");  
 	    document.onkeydown = Joc.teclat;
         
@@ -280,9 +335,12 @@ var Joc = {
         
 
         Joc.baixar();
-        Joc.dibuixarPeça();
-        Joc.comptaNivell += 1;
         
+        Joc.dibuixarPeça()
+        
+
+        
+        Joc.seguentNivell();
     },
 };
 
@@ -351,16 +409,16 @@ Pieza.prototype.moureEsquerra = function()
          { if ((Joc.pieza.x)>=0) { Joc.pieza.x--;
                            }};
 
-Pieza.prototype.rotarDreta = function () {
+Pieza.prototype.rotar = function () {
             var formaNova = new Array();
-            for (var i=0;i<this.forma.length;i++) {
+            for (var i=0;i<Joc.pieza.forma.length;i++) {
                 formaNova[i]=new Array();
-                for (var j=0;j<this.forma[i].length;j++) {
-                    formaNova[i][j]=this.forma[this.forma[i].length-1-j][i];
+                for (var j=0;j<Joc.pieza.forma[i].length;j++) {
+                    formaNova[i][j]=Joc.pieza.forma[Joc.pieza.forma[i].length-1-j][i];
                 }
             }
-            this.forma = formaNova;
+            Joc.pieza.forma = formaNova;
             } 
 
 Joc.inicialitzarJoc();
-setInterval(Joc.main, Joc.interval);
+var joc = setInterval(Joc.main, Joc.interval);

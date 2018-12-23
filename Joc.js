@@ -1,5 +1,5 @@
-var Joc = {
-    tauler: [[ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+var Joc = { //Objecte on estaran totes les variables y funcions del Joc
+    tauler: [[ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], //Tauler de Joc, de moment en blanc menys una part d'abaix per frenar les peces
              [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -27,15 +27,16 @@ var Joc = {
              [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]],
     
     puntuacio: 0,
-    punctuacioMax: 0,
-    pieza: null,
-    nextPieza: null,
-    nivell: 1,
+    puntuacioMax: 0,
+    pieza: null, //Aqui anirà l'objecte peça
+    nextPieza: null, //Aquí anirà la peça següent
+    nivell: 1, //Nivell del Joc, augmenta cada cop que cauen 10 peces
     comptaNivell: 0, //Cada cop que arriba a 10, l'interval es redueix i puga un nivell, per tant les peçes cauen mes rapid
-    interval: 500,
+    interval: 500, //Velocitat en que cauen les peces
     c:0,
-    posOriginal: 0,
-    inicialitzarJoc: function () {
+    posOriginal: 0, //S'utilitza per a la funció rotarPeça
+    
+    inicialitzarJoc: function () { // Funció que inicialitza el joc, creant dues peces i col·locant la primera en el tauler
         var pInicial = GeneraPecaAleatoria();
         Joc.pieza = new Pieza(pInicial,3,3);
         var pNext = GeneraPecaAleatoria();
@@ -45,7 +46,7 @@ var Joc = {
         
     },
     
-    dibuixarPeça: function(){
+    dibuixarPeça: function(){ //Aquesta funció dibuixa la peça en cada interval i renova la posició d'aquesta
         for(var y=0;y<Joc.pieza.forma.length;y++){
             for(var x=0;x<4;x++){
                 if(Joc.pieza.forma[y][x] != 0){
@@ -54,10 +55,10 @@ var Joc = {
             }
         }
     },
-    colocarPieza: function (){
+    colocarPieza: function (){ //Aquesta funció col·loca la peça adalt de tot del tauler
         Joc.posOriginal = Joc.pieza.forma;
         var comp=0;
-        for(var c=0; c<4; c++){
+        for(var c=0; c<4; c++){ //amb això fem que la peça no aparegui amb un espai en blanc a sobre seu
             if (Joc.pieza.forma[3][c] == 0){comp ++}
         }
         if(comp == 4){
@@ -75,11 +76,13 @@ var Joc = {
             }
         }
     },
-    derrota: function(){
+    
+    derrota: function(){ //Aquesta funció s'activa quan perds una partida
         document.getElementById("derrota").innerHTML = "HAS PERDUT";
 		clearInterval(joc);
     },
-    mostrarTaula: function() {
+    
+    mostrarTaula: function() { //Funció que mostra el tauler i tota la informació sobre el Joc
         document.getElementById("puntuacio").innerHTML = "Puntuació: " + Joc.puntuacio;
         document.getElementById("puntuacioMax").innerHTML = "Puntuació màxima: " + Joc.puntuacioMax;
         document.getElementById("nivell").innerHTML = "Nivell: " + Joc.nivell;
@@ -185,17 +188,18 @@ var Joc = {
         }
     },
     
-    seguentNivell: function(comptaNivell){
-        if (Joc.interval > 50){
+    seguentNivell: function(comptaNivell){ //Funció que s'activa quan han caigut 10 peces
+        if (Joc.interval > 50){ //Les peces cauen més ràpid a cada nivell, pero hi ha un tope
             if (Joc.comptaNivell==10){
                 Joc.nivell +=1;
-                Joc.comptaNivell == 0;
+                Joc.comptaNivell = 0;
                 var percentatge = Joc.interval / 100 * 10;
                 Joc.interval -= percentatge;
             }
         }
     },     
-    esborrar: function(){
+    
+    esborrar: function(){ //Aquesta funció esborra tot el tauler, menys les peces piontades de gris. Això serveix per a que no hi hagi rastre per sobre de les peces quan cauen
         for(var y=0;y<Joc.tauler.length-1;y++) {
             for(var x=0;x<Joc.tauler[0].length;x++){
                 if(Joc.tauler[y][x] !=0 && Joc.tauler[y][x] !=1){
@@ -204,7 +208,8 @@ var Joc = {
             }
         }   
     },    
-    teclat: function (e) {
+    
+    teclat: function (e) { //Per cada fletxa presionada, s'activa una funció diferent
         var key = document.all ? e.which : e.key;
         if (key == "ArrowRight"){ //depenent de quina fletxa s'ha pulsat, s'assignarà una direcció
             Joc.pieza.moureDreta(); //dreta
@@ -218,14 +223,15 @@ var Joc = {
             Joc.baixar();
         }
         else if (key=="ArrowUp"){
-            Joc.pieza.rotar();
-            var comp = Joc.comprovarPeca('rotar');//Amunt
+            Joc.pieza.rotar(); //Rotar
+            var comp = Joc.comprovarPeca('rotar');
             if (comp != false){
                 Joc.posOriginal = Joc.pieza.forma;
             }
         }
     },
-    comprovarPeca: function (d){
+    
+    comprovarPeca: function (d){ //Comprova si les peces estahn a dins del tauler correctament
         for (var y=0;y<4;y++){ //dreta
             for(var x=0; x<4;x++){
                 if (Joc.pieza.forma[y][x] !=0){
@@ -249,24 +255,14 @@ var Joc = {
             }   
         }
 
-       /* for (var y=0;y<4;y++){ // rotar
-            for(var x=0; x<4;x++){
-                if (Joc.pieza.forma[y][x] !=0){
-                    if ( Joc.tauler[Joc.pieza.y +y][Joc.pieza.x +x] == 1){
-                        Joc.pieza.forma = Joc.posOriginal;
-                        return false;
-                    }
-                }
-
-            }   
-        } */
-
     },
-    baixar: function (){
+    
+    baixar: function (){ //Funció que fa baixar la peça
         Joc.pieza.y ++;  
         Joc.puntuacio += 1;
     },
-    colisio: function (){
+    
+    colisio: function (){ //Detecta si una peça xoca i la pinta de gris
         for(var y=0;y<4; y++){
             for (var x=0;x<4; x++){
                 if(Joc.pieza.forma[y][x] != 0){
@@ -279,7 +275,7 @@ var Joc = {
         }
     },
 
-    pintarGris : function(){
+    pintarGris : function(){ //Funció que pintar de gris les peces que s'han xocat
         for(var y=0;y<4; y++){
             for (var x=0;x<4; x++){
                 if(Joc.tauler[Joc.pieza.y -y][Joc.pieza.x + x ] != 0){
@@ -288,7 +284,7 @@ var Joc = {
             }
         }
     },
-    seguent: function(){
+    seguent: function(){ //Truca a la següent peça i la torna a col·locar a dalt de tot 
         Joc.comptaNivell +=1;
         Joc.pieza=new Pieza(Joc.nextPieza.forma, 3,3);
         var pNext = GeneraPecaAleatoria();
@@ -296,7 +292,7 @@ var Joc = {
         
         Joc.colocarPieza();
     },
-    comprovarLinia: function () {
+    comprovarLinia: function () { //Comprova que una linia està plena de 1, si es així s'esborra i les demés cauen una posició
         var comprovant = 0;
         for (var y=0;y<25;y++){
             for (x=0;x<Joc.tauler[0].length;x++){  
@@ -323,34 +319,33 @@ var Joc = {
         }
     }, 
         
-    main : function (){
+    main : function (){ //Funció on es desarrolla tot el Joc
         Joc.mostrarTaula();
+        
         Joc.colisio();
+        
         Joc.comprovarLinia();
+        
         var element = document.getElementById("all");  
 	    document.onkeydown = Joc.teclat;
         
         Joc.esborrar();
         
-        
-
         Joc.baixar();
         
         Joc.dibuixarPeça()
-        
-
         
         Joc.seguentNivell();
     },
 };
 
-var Pieza = function(forma, x, y)
+var Pieza = function(forma, x, y) //Objecte peça
         { this.forma = forma;
           this.x = x;
           this.y = y;
           };
  
-function GeneraPecaAleatoria()
+function GeneraPecaAleatoria() //Genera una peca aleatòria quan és trucada
          { var peces = [
                  [  [0,0,0,0],
                     [0,'A','A',0],
@@ -390,7 +385,7 @@ function GeneraPecaAleatoria()
            var numeroAleatori = Math.round(Math.random()*6);                      
            return peces[numeroAleatori];     
        }         
-Pieza.prototype.moureDreta = function(){ 
+Pieza.prototype.moureDreta = function(){ //Funció per moure a la dreta una peça
     for(var y=0; y<4 ;y++){
         for(var x=0; x<4 ;x++){
             if(Joc.tauler[Joc.pieza.y -y][Joc.pieza.x + 3 - x] != 0){
@@ -405,11 +400,11 @@ Pieza.prototype.moureDreta = function(){
 };
 
 
-Pieza.prototype.moureEsquerra = function()
+Pieza.prototype.moureEsquerra = function() //Funció per moure a l'esquerra una peça
          { if ((Joc.pieza.x)>=0) { Joc.pieza.x--;
                            }};
-
-Pieza.prototype.rotar = function () {
+ 
+Pieza.prototype.rotar = function () { //Funció per rotar una peça
             var formaNova = new Array();
             for (var i=0;i<Joc.pieza.forma.length;i++) {
                 formaNova[i]=new Array();
@@ -420,5 +415,5 @@ Pieza.prototype.rotar = function () {
             Joc.pieza.forma = formaNova;
             } 
 
-Joc.inicialitzarJoc();
+Joc.inicialitzarJoc(); 
 var joc = setInterval(Joc.main, Joc.interval);
